@@ -13,6 +13,7 @@ Set Default Goal Selector "!".
 
 (* ===================== expression with variables ======================== *)
 Definition state := total_map nat.
+
 Inductive aexp : Type :=
  | ANum (n : nat)
  | AId (x : string)
