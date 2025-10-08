@@ -2,7 +2,8 @@ COQFILES = \
 	Identifier.v \
 	Environment.v \
 	Imperative.v \
-	Types.v
+	Types.v \
+	Augmented.v
 
 COQC = coqc -Q . TL
 
