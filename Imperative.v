@@ -52,6 +52,16 @@ Proof.
   intros c1 c2 H. discriminate.
 Qed.
 
+Lemma if_neq_stop : forall e c1 c2, (IFB e THEN c1 ELSE c2 FI) <> STOP.
+Proof.
+  intros e c1 c2 H. discriminate.
+Qed.
+
+Lemma while_neq_stop : forall e c, (WHILE e DO c END) <> STOP.
+Proof.
+  intros e c H. discriminate.
+Qed.
+
 Lemma eq_cmd_stop_dec: forall c1 : cmd, {c1 = STOP} + { c1 <> STOP }.
 Proof.
   induction c1.

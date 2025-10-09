@@ -17,6 +17,53 @@ Definition join (l1 l2 : level) : level :=
   end.
 Notation "l '⊔' l'" := (join l l') (at level 34).
 
+Lemma level_flowsto_join: forall l1 l2 l3,
+    l1 ⊔ l2 ⊑ l3 ->  l1 ⊑ l3 /\ l2 ⊑ l3.
+Proof.
+  intros l1 l2 l3 H.
+  destruct l1; destruct l2; destruct l3; simpl in *; split; try ( inversion H; apply flowsto_ord); try(apply flowsto_sym).
+Qed.
+
+Lemma level_equal_join: forall l1 l2 l3,
+    l1 ⊔ l2 = l3 ->  l1 ⊑ l3 /\ l2 ⊑ l3.
+Proof.
+  intros l1 l2 l3 H.
+  destruct l1; destruct l2; destruct l3; simpl in *; split; try ( inversion H; apply flowsto_ord); try(apply flowsto_sym).
+Qed.
+
+Lemma join_twice_eq : forall l1 l2,
+    (l1 ⊔ l2) ⊔ l2 = l1 ⊔ l2.
+Proof. 
+  intros l1 l2.
+  destruct l1; destruct l2; simpl; auto. 
+Qed.
+
+Lemma join_smaller_result_smaller_right: forall l1 l2 l3,
+    l1 ⊑ l3 ->
+    l2 ⊔ l1 ⊑ l2 ⊔ l3.
+Proof.
+  intros l1 l2 l3 H.
+  destruct l1; destruct l2; destruct l3; simpl in *; try (apply flowsto_ord); try (apply flowsto_sym); auto.
+Qed.
+
+Lemma join_smaller_result_smaller_left: forall l1 l2 l3,
+    l1 ⊑ l3 ->
+    l1 ⊔ l2 ⊑ l3 ⊔ l2.
+Proof.
+  intros l1 l2 l3 H.
+  destruct l1; destruct l2; destruct l3; simpl in *; try (apply flowsto_ord); try (apply flowsto_sym); auto.
+Qed.
+
+
+Lemma level_transitive: forall l1 l2 l3,
+    l1 ⊑ l2 ->
+    l2 ⊑ l3 ->
+    l1 ⊑ l3.
+Proof.
+  intros l1 l2 l3 H12 H23.
+  destruct l1; destruct l2; destruct l3; simpl in *; try (apply flowsto_ord); try (apply flowsto_sym); auto.
+Qed.
+
 Definition typenv := @Env level.
 Reserved Notation "'{{' Γ '⊢' e ':' l '}}'" (at level 0, Γ at level 50, e at level 99).
 (* no subtyping *)
