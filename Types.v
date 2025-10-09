@@ -38,6 +38,13 @@ Proof.
   destruct l1; destruct l2; simpl; auto. 
 Qed.
 
+Lemma join_twice_not_bigger : forall l1 l2,
+    (l1 ⊔ l2) ⊔ l2 ⊑ l1 ⊔ l2.
+Proof. 
+  intros l1 l2.
+  destruct l1; destruct l2; simpl; auto; apply flowsto_sym. 
+Qed.
+
 Lemma join_smaller_result_smaller_right: forall l1 l2 l3,
     l1 ⊑ l3 ->
     l2 ⊔ l1 ⊑ l2 ⊔ l3.
@@ -95,13 +102,13 @@ Inductive cmd_has_type : typenv -> level -> cmd -> Prop :=
       -{ Γ, pc ⊢ (c1 ;; c2) }-
   | T_If : forall Γ pc e l pc' c1 c2,
       {{ Γ ⊢ e : l }} ->
-      pc ⊔ l = pc' ->
+      pc ⊔ l ⊑ pc' ->
       -{ Γ, pc' ⊢ c1 }- ->
       -{ Γ, pc' ⊢ c2 }- ->
       -{ Γ, pc ⊢ (IFB e THEN c1 ELSE c2 FI) }-
   | T_While : forall Γ pc e l pc' c,
       {{ Γ ⊢ e : l }} ->
-      pc ⊔ l = pc' ->
+      pc ⊔ l ⊑ pc' ->
       -{ Γ, pc' ⊢ c }- ->
       -{ Γ, pc ⊢ (WHILE e DO c END) }-
 where "'-{' Γ ',' pc '⊢' c '}-'" := (cmd_has_type Γ pc c).

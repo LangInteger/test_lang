@@ -23,18 +23,29 @@ Definition wf_cfg (cfg : config) (Γ : typenv) (pc: level): Prop :=
 Notation  "'={' Γ ',' pc '⊢' cfg '}='" := 
   (wf_cfg cfg Γ pc ) (at level 40).
 
-Lemma pc_lowering_assign:
-        forall Γ pc x e (le:level) (lx:level) pc',
-          -{ Γ, pc' ⊢ (x ::= e)}- -> pc ⊑ pc' -> -{ Γ, pc ⊢ (x ::= e)}-.
+Lemma pc_lowering:
+        forall Γ pc c pc',
+          -{ Γ, pc' ⊢ c}- -> pc ⊑ pc' -> -{ Γ, pc ⊢ c}-.
 Proof.
-  intros Γ pc x e le lx pc' H_wf_c H_flow.
-  inversion H_wf_c.
-  apply T_Assign with (le:=le0) (lx:=lx0); auto.
-  specialize (join_smaller_result_smaller_right pc le0 pc' H_flow) as H_join.
-  specialize (level_transitive (le0 ⊔ pc) (le0 ⊔ pc') lx0 H_join H5) as H_le.
-  assumption.
+  intros Γ pc c pc' H_wf_c H_flow.
+  induction H_wf_c.
+  - apply T_Skip.
+  - apply T_Assign with (le:=le) (lx:=lx); auto.
+    specialize (join_smaller_result_smaller_right pc le pc0 H_flow) as H_join.
+    specialize (level_transitive (le ⊔ pc) (le ⊔ pc0) lx H_join H1) as H_le.
+    auto.
+  - specialize (IHH_wf_c1 H_flow).
+    specialize (IHH_wf_c2 H_flow).
+    apply T_Seq; auto.
+  - apply T_If with (l:=l) (pc':=pc'); auto.
+    specialize (join_smaller_result_smaller_left pc l pc0 H_flow) as H_join.
+    specialize (level_transitive (pc ⊔ l) (pc0 ⊔ l) pc' H_join H0) as H_le.
+    assumption.
+  - apply T_While with (l:=l) (pc':=pc'); auto.
+    specialize (join_smaller_result_smaller_left pc l pc0 H_flow) as H_join.
+    specialize (level_transitive (pc ⊔ l) (pc0 ⊔ l) pc' H_join H0) as H_le.
+    assumption.
 Qed.
-
 
 Theorem preservation_wf_cfg: forall Γ pc cfg cfg',
     ={ Γ, pc ⊢ cfg }= ->
@@ -119,7 +130,7 @@ Proof.
         by apply if_neq_stop.
       specialize (H_wf_cmd H_if_neq_stop) as H_wf_cmd'.
       inversion H_wf_cmd'.
-      apply level_equal_join in H8 as [H81 H82].
+      apply level_flowsto_join in H8 as [H81 H82].
       apply pc_lowering with (pc:=pc) in H9.
       apply H9.
       apply H81.
