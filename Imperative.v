@@ -100,7 +100,15 @@ Inductive step : config -> config -> Prop :=
   | step_if2 : forall e c1 c2 st,
        eval e st 0 ->
       〈 IFB e THEN c1 ELSE c2 FI, st 〉⇒〈 c2, st 〉
-  | step_while : forall e c st,
+  (* you cannot use while ==> if else here
+     or the proof fo the preservation of well-formedness will fail
+   *)
+  | step_while1 : forall e c st u,
+       eval e st u -> u <> 0 ->
       〈 WHILE e DO c END, st 〉⇒
-          〈 IFB e THEN c;; WHILE e DO c END ELSE SKIP FI, st 〉
+          〈 c;; WHILE e DO c END, st 〉
+  | step_while2 : forall e c st,
+       eval e st 0 ->
+      〈 WHILE e DO c END, st 〉⇒
+          〈 SKIP, st 〉
 where "cfg '⇒' cfg' " := (step cfg cfg').

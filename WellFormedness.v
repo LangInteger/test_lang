@@ -154,17 +154,12 @@ Proof.
         by apply while_neq_stop.
       specialize (H_wf_cmd H_while_neq_stop) as H_wf_cmd'.
       inversion H_wf_cmd'.
-      assert (Hwhile_join : -{ Γ, pc ⊔ l ⊢ WHILE e DO c END }-).
-        { apply T_While with (l := l) (pc' := pc ⊔ l).
-            -- apply H2.
-            -- apply join_twice_not_bigger.
-            -- apply pc_lowering with (pc':=pc');auto.
-        }
-      apply T_If with (pc:=pc) (l:=l) (pc':=pc').
-      * apply H2.
-      * apply H5.
-      * apply T_Seq. 
-        -- apply H6.
-        -- rewrite <- H5. apply Hwhile_join.
-      * apply T_Skip. 
+      apply T_Seq.
+      * specialize (level_flowsto_join pc l pc' H7) as [H71 H72].
+        specialize (pc_lowering Γ pc c pc' H8 H71) as result.
+        auto.
+      * auto.
+  - split.
+    + apply H_wf_mem.
+    + intro. apply T_Skip.
 Qed.
