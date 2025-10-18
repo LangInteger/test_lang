@@ -1,4 +1,5 @@
 From TL Require Import Identifier Environment Imperative Types Augmented.
+Require Import Coq.Program.Equality.
 
 Definition wf_mem (m : state) (Γ : typenv) : Prop :=
   (forall x u, m x = Some u -> exists l, Γ x = Some l)
@@ -162,4 +163,34 @@ Proof.
   - split.
     + apply H_wf_mem.
     + intro. apply T_Skip.
+Qed.
+
+(* Theorem event_step_inversion:
+  forall Γ e cfg cfg',
+    event_step Γ e cfg cfg'
+    -> step cfg cfg'.
+Proof.
+  intros.
+  dependent induction H; auto; repeat (constructor; auto).
+Qed. *)
+
+Theorem event_step_inversion:
+  forall Γ e cfg cfg',
+    event_step Γ e cfg cfg'
+    -> step cfg cfg'.
+Proof.
+  intros. 
+  induction H; auto.
+  - apply step_seq1; auto.
+  - apply step_seq2; auto.
+Qed.
+
+Theorem preservation_wf_event_cfg: forall Γ e pc cfg cfg',
+    ={ Γ, pc ⊢ cfg }= ->
+    event_step Γ e cfg cfg' ->
+    ={ Γ, pc ⊢ cfg'}= .
+Proof.
+  intros.
+  specialize (event_step_inversion Γ e cfg cfg' H0) as H1.
+  apply preservation_wf_cfg with (cfg:=cfg); auto.
 Qed.

@@ -42,7 +42,7 @@ Lemma join_twice_not_bigger : forall l1 l2,
     (l1 ⊔ l2) ⊔ l2 ⊑ l1 ⊔ l2.
 Proof. 
   intros l1 l2.
-  destruct l1; destruct l2; simpl; auto; apply flowsto_sym. 
+  destruct l1; destruct l2; simpl; apply flowsto_sym.
 Qed.
 
 Lemma join_smaller_result_smaller_right: forall l1 l2 l3,
