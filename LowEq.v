@@ -105,4 +105,75 @@ Proof.
   apply val_low_eq_trans with (v:=v);auto.
 Qed.
 
+(* state low-eq *)
+Inductive state_low_eq : typenv -> state -> state -> Prop :=
+  | StateLEq : forall Γ m1 m2,
+      wf_mem m1 Γ ->
+      wf_mem m2 Γ ->
+      (forall x l, Γ x = Some l -> var_low_eq Γ m1 m2 x) ->
+      state_low_eq Γ m1 m2.
 
+Lemma state_low_eq_sym : forall Γ m1 m2,
+  state_low_eq Γ m1 m2 ->
+  state_low_eq Γ m2 m1.
+Proof. 
+  intros Γ m1 m2 H.
+  inversion H.
+  apply StateLEq; auto.
+  intros x l.
+  specialize (H2 x l).
+  intros H_env.
+  apply var_low_eq_sym.
+  apply H2 in H_env.
+  assumption.
+Qed.
+
+Lemma state_low_eq_wf_refl : forall Γ m,
+  wf_mem m Γ ->
+  state_low_eq Γ m m.
+Proof.
+  intros.
+  apply StateLEq; auto.
+  intros x l.
+  apply var_low_eq_wf_refl.
+  assumption.
+Qed.
+
+Lemma state_low_eq_trans : forall Γ m1 m2 m3,
+  state_low_eq Γ m1 m2 ->
+  state_low_eq Γ m2 m3 ->
+  state_low_eq Γ m1 m3.
+Proof.
+  intros Γ m1 m2 m3 H12 H23.
+  inversion H12.
+  inversion H23.
+  apply StateLEq; auto.
+  intros x l.
+  specialize (H1 x l).
+  specialize (H7 x l).
+  intros H_env.
+  specialize (H1 H_env).
+  specialize (H7 H_env).
+  apply var_low_eq_trans with (m2:=m2); auto.
+Qed.
+
+
+(* relation between states low eq and vars low eq *)
+Lemma states_low_eq_means_vars_low_eq : forall Γ m1 m2,
+  state_low_eq Γ m1 m2 ->
+  forall x l,
+    Γ x = Some l ->
+    var_low_eq Γ m1 m2 x.
+Proof. 
+  intros Γ m1 m2 H_state_leq x l H_env.
+  inversion H_state_leq.
+  specialize (H1 x l).
+  apply H1 in H_env.
+  assumption.
+Qed.
+
+Definition config_low_eq (Γ : typenv) (cfg1 cfg2 : config) : Prop :=
+  match cfg1, cfg2 with
+  | Config c1 m1, Config c2 m2 =>
+      c1 = c2 /\ state_low_eq Γ m1 m2
+  end.

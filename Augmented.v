@@ -6,15 +6,14 @@ Inductive event :=
 
 
 Inductive event_step : typenv -> event -> config -> config -> Prop :=
-  | event_step_assign:
-      forall Γ l x e v st st',
+  | event_skip: forall Γ st,
+        〈 SKIP, st 〉 ⇒ 〈 STOP, st 〉 ->
+        event_step Γ EmptyEvent 〈 SKIP, st 〉 〈 STOP, st 〉
+  | event_assign: forall Γ l x e v st st',
         〈 x ::= e,  st〉 ⇒ 〈STOP, st' 〉->
         Γ (x) = Some l ->
         eval e st v ->
         event_step Γ (AssignmentEvent l x v) 〈 x ::= e,  st〉 〈STOP, st' 〉
-  | event_skip: forall Γ st,
-        〈 SKIP, st 〉 ⇒ 〈 STOP, st 〉 ->
-        event_step Γ EmptyEvent 〈 SKIP, st 〉 〈 STOP, st 〉
   | event_empty_branch: forall Γ e c1 c2 c' st,
         〈 IFB e THEN c1 ELSE c2 FI, st 〉 ⇒ 〈 c', st 〉 ->
         event_step Γ EmptyEvent 〈 IFB e THEN c1 ELSE c2 FI, st 〉 〈 c', st 〉
