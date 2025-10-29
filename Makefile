@@ -3,7 +3,9 @@ COQFILES = \
 	Environment.v \
 	Imperative.v \
 	Types.v \
-	Augmented.v
+	Augmented.v \
+	WellFormedness.v \
+	LowEq.v
 
 COQC = coqc -Q . TL
 
@@ -13,4 +15,4 @@ all: $(COQFILES:.v=.vo)
 	$(COQC) $<
 
 clean:
-	rm -f *.vo *.glob *.vok *.vos *.aux
+	rm -f *.vo *.glob *.vok *.vos *.aux .*.aux

@@ -5,6 +5,17 @@ Definition Env {X : Type} := id -> option X.
 Definition empty_env {X : Type} : @Env X :=
   fun _ => None.
 
+Lemma env_is_det: forall {X: Type} (st: @Env X) x u v,
+  st x = Some u ->
+  st x = Some v ->
+  u = v.
+Proof.
+  intros.
+  rewrite H in H0.
+  inversion H0.
+  reflexivity.
+Qed.
+
 Definition update_env {X : Type} (st : @Env X) (x : id) (n : X) : @Env X :=
   fun x' => if eq_id_dec x x' then (Some n) else st x'.
 
