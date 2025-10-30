@@ -1,4 +1,5 @@
 COQFILES = \
+  ./lib/InductionPrinciple.v \
 	Identifier.v \
 	Environment.v \
 	Imperative.v \
@@ -7,7 +8,9 @@ COQFILES = \
 	WellFormedness.v \
 	LowEq.v \
 	Bridge.v \
-	NIexp.v
+	NIexp.v \
+	NIBridge.v \
+	NI.v
 
 COQC = coqc -Q . TL
 
