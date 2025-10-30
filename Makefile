@@ -5,7 +5,9 @@ COQFILES = \
 	Types.v \
 	Augmented.v \
 	WellFormedness.v \
-	LowEq.v
+	LowEq.v \
+	Bridge.v \
+	NIexp.v
 
 COQC = coqc -Q . TL
 

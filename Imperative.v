@@ -41,7 +41,6 @@ Notation "'WHILE' b 'DO' c 'END'" :=
 Notation "'IFB' c1 'THEN' c2 'ELSE' c3 'FI'" :=
   (CIf c1 c2 c3) (at level 80, right associativity).
 
-
 Lemma assign_neq_stop : forall x e, x ::= e <> STOP.
 Proof.
   intros x e H. discriminate.
@@ -75,6 +74,16 @@ Qed.
 
 Inductive config : Type :=
   | Config : cmd -> state -> config.
+
+Definition is_stop cfg := 
+  match cfg with
+  | Config c m => c = STOP
+  end.
+
+Definition is_not_stop cfg := 
+  match cfg with
+  | Config c m => c <> STOP
+  end.
 
 Notation "'〈' c ',' st '〉'" := (Config c st) (at level 0).
 

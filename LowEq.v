@@ -105,6 +105,23 @@ Proof.
   apply val_low_eq_trans with (v:=v);auto.
 Qed.
 
+(* relation between var low eq and val low eq *)
+Lemma var_low_eq_means_val_low_eq : forall Γ m1 m2 v1 v2 x l,
+  var_low_eq Γ m1 m2 x ->
+  Γ x = Some l ->
+  m1 x = Some v1 ->
+  m2 x = Some v2 ->
+  val_low_eq l v1 v2.
+Proof. 
+  intros Γ m1 m2 v1 v2 x l H_var_leq H_env H_m1 H_m2.
+  inversion H_var_leq. subst.
+  specialize (env_is_det Γ x l l0 H_env H) as H_level_eq.
+  specialize (env_is_det m1 x v1 u H_m1 H0) as H_val1_eq.
+  specialize (env_is_det m2 x v2 v H_m2 H1) as H_val2_eq.
+  subst.
+  assumption.
+Qed.
+
 (* state low-eq *)
 Inductive state_low_eq : typenv -> state -> state -> Prop :=
   | StateLEq : forall Γ m1 m2,
