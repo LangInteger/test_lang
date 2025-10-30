@@ -1,9 +1,5 @@
-Section InductionPrinciple.
 
 (* http://pldev.blogspot.dk/2012/02/proving-strong-induction-principle-for.html *)
-
-Require Export Datatypes.
-
 
 
 
@@ -51,5 +47,3 @@ Proof.
   apply weaken.
   apply strongind_aux; assumption.
 Qed.
-
-End InductionPrinciple.

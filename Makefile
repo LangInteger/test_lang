@@ -8,6 +8,7 @@ COQFILES = \
 	WellFormedness.v \
 	LowEq.v \
 	Bridge.v \
+	Adequacy.v \
 	NIexp.v \
 	NIBridge.v \
 	NI.v
@@ -21,3 +22,4 @@ all: $(COQFILES:.v=.vo)
 
 clean:
 	rm -f *.vo *.glob *.vok *.vos *.aux .*.aux
+	rm -f lib/*.vo lib/*.glob lib/*.vok lib/*.vos lib/*.aux lib/.*.aux

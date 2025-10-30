@@ -2,6 +2,7 @@
 From TL Require Import Identifier Environment.
 From Coq Require Import Relations.
 From Coq Require Import Arith.PeanoNat.
+Require Import Coq.Program.Equality.
 
 Inductive exp : Type :=
   | ENum : nat -> exp
@@ -207,3 +208,14 @@ Proof.
     exists (S n).
     apply multi_step_more with (y:=y); assumption.
 Qed.
+
+Lemma multi_idx_start_with_stop_states_unchanged:
+  forall n c st1 st2,
+    multistep_idx 〈STOP, st1〉 〈c, st2〉 n ->
+    c = STOP /\ st1 = st2.
+Proof.
+  intros n c st1 st2 H.
+  dependent induction H.
+  - auto.
+  - apply IHmulti_idx; auto. inversion H.
+Qed. 

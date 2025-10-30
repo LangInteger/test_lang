@@ -185,7 +185,7 @@ Proof.
   - apply step_seq2; auto.
 Qed.
 
-Theorem preservation_wf_event_cfg: forall Γ e pc cfg cfg',
+Lemma preservation_wf_event_cfg: forall Γ e pc cfg cfg',
     ={ Γ, pc ⊢ cfg }= ->
     event_step Γ e cfg cfg' ->
     ={ Γ, pc ⊢ cfg'}= .
@@ -194,3 +194,18 @@ Proof.
   specialize (event_step_inversion Γ e cfg cfg' H0) as H1.
   apply preservation_wf_cfg with (cfg:=cfg); auto.
 Qed.
+
+Lemma preservation_wf_event_step: 
+  forall Γ e c m c' m' pc,
+    -{ Γ, pc ⊢ c}- ->
+    wf_mem m Γ ->
+    event_step Γ e 〈c, m 〉 〈c', m' 〉->
+    wf_mem m' Γ /\ ( c' <> STOP -> -{Γ, pc ⊢ c'}- ).
+Proof.
+  intros.
+  specialize (preservation_wf_event_cfg Γ e pc 〈c, m 〉 〈c', m' 〉) as H_pres.
+  unfold wf_cfg in H_pres.
+  destruct (eq_cmd_stop_dec c) as [Heq | Hneq]; subst.
+  - apply H_pres; auto.
+  - apply H_pres; auto.
+Qed. 

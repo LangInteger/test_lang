@@ -1,4 +1,5 @@
-From TL Require Import Identifier Environment Imperative Types Augmented.
+From TL Require Import Identifier Environment Imperative Types Augmented WellFormedness.
+From Coq Require Import Program.Equality.
 
 Inductive low_event : typenv -> level -> event -> Prop :=
   | LEvent_Assign_Low : forall Γ l l' x v,
@@ -34,3 +35,25 @@ Inductive bridge_step_num: typenv -> level -> config -> config -> event -> nat -
 
 Notation " t '↷' '(' Γ ',' obs ',' n ')'  t' " :=
   (bridge_step_num Γ Low t t' obs n) (at level 40).
+
+
+Lemma preservation_wf_bridge:
+  forall Γ pc c c' m m' ev n,
+    -{ Γ , pc ⊢ c }- ->
+    (〈c, m 〉 ↷ (Γ, ev, n) 〈c', m' 〉) ->
+    wf_mem m Γ ->
+    (wf_mem m' Γ  /\ (c' <> STOP -> -{ Γ , pc ⊢ c' }- )) .
+
+Proof.
+  intros.
+  dependent induction H0.
+
+  - inversion H0. apply preservation_wf_event_step with (e:=evt) (c:=c) (m:=m); auto.
+  - inversion H1. apply preservation_wf_event_step with (e:=evt) (c:=c) (m:=m); auto.
+  - inversion H2. destruct cfg' as [c'' m'']. 
+    apply IHbridge_step_num with (c:=c'') (m:=m'');    
+    auto.
+    + specialize (preservation_wf_event_step Γ evt' c m c'' m'' pc H H3 H4 ) as [H_ret1 H_ret2].
+      apply H_ret2. apply H0.
+    + specialize (preservation_wf_event_step Γ evt' c m c'' m'' pc H H3 H4 ) as [H_ret1 H_ret2]. auto.
+Qed.
