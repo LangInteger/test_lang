@@ -78,6 +78,6 @@ Proof.
   apply multi_implies_multi_idx in H_st2.
   destruct H_st1 as [n1 Hst1'].
   destruct H_st2 as [n2 Hst2'].
-  apply TINI_idx with (c:=c) (n1:=n1) (n2:=n2) (st1:=st1) (st2:=st2) (pc:=pc); assumption.
+  apply tini_idx with (c:=c) (n1:=n1) (n2:=n2) (st1:=st1) (st2:=st2) (pc:=pc); assumption.
 Qed.
   
