@@ -36,7 +36,7 @@ Proof.
         destruct cfg1' as [c1 st1'].
         destruct cfg2' as [c2 st2'].
 
-        specialize (ni_bridge_num Γ pc c H0 c1 c2 st1 st2 ev1 ev2 st1' st2' n1' n2' H1 H_bridge1 H_bridge2) as [H_leq' [H_c_eq [H_low_event_eq H_event_eq]]].
+        specialize (ni_bridge_num n1' Γ pc c H0 c1 c2 st1 st2 ev1 ev2 st1' st2' n2' H1 H_bridge1 H_bridge2) as [H_leq' [H_c_eq [H_low_event_eq H_event_eq]]].
         subst.
 
         assert (k1 <= n) as H_k1 by lia.
