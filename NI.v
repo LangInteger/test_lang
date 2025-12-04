@@ -26,9 +26,9 @@ Proof.
     unfold TINI_idx.
     intros.
     inversion H1.
-    specialize (bridge_adequacy (S n) c st1 st1_end H2 Γ pc H0 H4) as [H_adeq_st11 | H_adeq_st12]; inversion H2; subst.
+    specialize (bridge_adequacy Γ (S n) c st1 st1_end H2 pc H0 H4) as [H_adeq_st11 | H_adeq_st12]; inversion H2; subst.
     + inversion H11.
-    + specialize (bridge_adequacy n2 c st2 st2_end H3 Γ pc H0 H5) as [H_adeq_st21 | H_adeq_st22]. subst.
+    + specialize (bridge_adequacy Γ n2 c st2 st2_end H3 pc H0 H5) as [H_adeq_st21 | H_adeq_st22]. subst.
       * inversion H11.
       * destruct H_adeq_st12 as [ev1 [n1' [cfg1' [k1 [H_bridge1 [H_multistep1 H_index1]]]]]].
         destruct H_adeq_st22 as [ev2 [n2' [cfg2' [k2 [H_bridge2 [H_multistep2 H_index2]]]]]].
