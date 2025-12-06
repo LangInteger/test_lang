@@ -1,5 +1,26 @@
 From TL Require Import Identifier Environment Imperative Types Augmented Bridge.
 From TL Require Import WellFormedness LowEq NIexp.
+From TL.lib Require Import InductionPrinciple.
+
+Lemma skip_bridge_properties:
+  forall Γ n m ev c_end m_end,
+    bridge_step_num Γ Low 〈SKIP, m 〉 〈c_end, m_end 〉 ev n ->
+    m_end = m /\ c_end = STOP /\ n = 0 /\ ev = EmptyEvent.
+Proof.
+  intros.
+  inversion H.
+  - inversion H0.
+    inversion H7.
+    auto.
+  - inversion H0.
+    inversion H8.
+    auto.
+  - inversion H0.
+    inversion H9.
+    
+    exfalso.
+    eauto.
+Qed.
 
 Definition NI_idx (n1: nat): Prop :=
   forall Γ pc c,
@@ -17,3 +38,13 @@ Theorem ni_bridge_num:
   forall n, NI_idx (n).
 Proof.
 Admitted.
+  (* apply strongind;
+  unfold NI_idx.
+  (* Base case *)
+  {
+    intros Γ pc c  H; subst.
+    induction H; intros.
+    {
+      
+    }
+  } *)
