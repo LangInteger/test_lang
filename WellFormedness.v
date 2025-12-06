@@ -11,7 +11,21 @@ Lemma update_preserves_wf_mem: forall m Γ x l v,
     Γ x = Some l ->
     wf_mem (update_env m x v) Γ.
 Proof.
-Admitted.
+  intros m Γ x l v [H1 H2] H_Gamma_x.
+  split.
+  - intros y u H_m'.
+    unfold update_env in H_m'.
+    destruct (eq_id_dec x y) as [Heq | Hneq].
+    + subst. exists l. assumption.
+    + specialize (H1 y u H_m') as [l' H_Gamma_y].
+      exists l'. assumption.
+  - intros y l' H_Gamma_y.
+    unfold update_env.
+    destruct (eq_id_dec x y) as [Heq | Hneq].
+    + subst. exists v. reflexivity.
+    + specialize (H2 y l' H_Gamma_y) as [u H_m'].
+      exists u. assumption.
+Qed.
 
 (* - m is well-formed w.r.t. Γ
    - c is well-typed under Γ and pc (if c is not stop)
